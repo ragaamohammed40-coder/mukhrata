@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مساعد الخراطة</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f3;--card:#fff;--ink:#1c2630;--mute:#5d6b78;--line:#d3dae0;--acc:#b8860b;--accbg:#fbf3dc;--head:#26343f;--headink:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141b21;--card:#1d272f;--ink:#e8edf1;--mute:#97a5b1;--line:#33424d;--acc:#e0b040;--accbg:#2d2a1a;--head:#0e1418;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141b21;--card:#1d272f;--ink:#e8edf1;--mute:#97a5b1;--line:#33424d;--acc:#e0b040;--accbg:#2d2a1a;--head:#0e1418;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:var(--head);color:var(--headink);padding:18px 16px 0}
+header h1{margin:0;font-size:1.35rem}
+header p{margin:2px 0 12px;color:#b9c4cd;font-size:.85rem}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav button{flex:1;min-width:max-content;border:0;background:transparent;color:#b9c4cd;font:inherit;font-weight:600;padding:10px 14px;border-bottom:3px solid transparent;cursor:pointer}
+nav button[aria-selected="true"]{color:#fff;border-color:var(--acc)}
+nav button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{max-width:640px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:14px}
+label{display:block;font-weight:600;margin:10px 0 4px;font-size:.92rem}
+input,select{width:100%;font:inherit;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res{background:var(--accbg);border:1px solid var(--acc);border-radius:8px;padding:12px 14px;margin-top:14px}
+.res b{font-size:1.6rem;display:block;direction:ltr;text-align:right}
+.res small{color:var(--mute)}
+.note{color:var(--mute);font-size:.82rem;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--mute);font-weight:600}
+td.l{direction:ltr;text-align:left;font-weight:600}
+.wrap{overflow-x:auto}
+.term{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.term .de{direction:ltr;font-weight:700;color:var(--acc)}
+.term .sub{color:var(--mute);font-size:.8rem;direction:ltr;text-align:left}
+</style>
+</head>
+<body>
+<header>
+<h1>مساعد الخراطة</h1>
+<p>أدوات سريعة لعمال الورش في ألمانيا</p>
+<nav role="tablist">
+<button role="tab" aria-selected="true" data-t="calc">حاسبة القطع</button>
+<button role="tab" aria-selected="false" data-t="dict">القاموس</button>
+<button role="tab" aria-selected="false" data-t="thread">اللولبة</button>
+</nav>
+</header>
+<main>
+
+<section id="calc" class="on">
+<div class="card">
+<label for="mat">نوع المعدن</label>
+<select id="mat"></select>
+<label for="tool">نوع الأداة</label>
+<select id="tool"><option value="hm">Hartmetall (كاربيد)</option><option value="hss">HSS (فولاذ سريع)</option></select>
+<div class="row">
+<div><label for="dia">القطر (مم)</label><input id="dia" type="number" inputmode="decimal" value="40" min="1"></div>
+<div><label for="fn">التغذية لكل دورة (مم)</label><input id="fn" type="number" inputmode="decimal" value="0.2" step="0.05" min="0.01"></div>
+</div>
+<div class="res">
+<small>سرعة القطع المقترحة Vc</small><b id="vc"></b>
+<small>عدد الدورات n</small><b id="rpm"></b>
+<small>سرعة التغذية Vf</small><b id="vf"></b>
+</div>
+<p class="note">القيم تقريبية للبداية فقط. راجع دائماً جدول الشركة المصنّعة للأداة وتعليمات المشرف، وابدأ بسرعة أقل ثم زد تدريجياً.</p>
+</div>
+<div class="card note" style="margin:0">القانون: n = (Vc × 1000) ÷ (π × d) ، وVf = n × f</div>
+</section>
+
+<section id="dict">
+<div class="card">
+<label for="q">ابحث بالعربية أو الألمانية</label>
+<input id="q" type="search" placeholder="مثال: مخرطة أو Vorschub">
+<div id="terms"></div>
+</div>
+</section>
+
+<section id="thread">
+<div class="card">
+<p style="margin-top:0">اللولب المترو العادي (ISO): الخطوة وقطر المثقاب قبل التسنين.</p>
+<div class="wrap"><table>
+<thead><tr><th>المقاس</th><th>الخطوة (مم)</th><th>مثقاب قبل التسنين (مم)</th></tr></thead>
+<tbody id="tt"></tbody></table></div>
+<p class="note">قطر المثقاب = القطر الاسمي − الخطوة (تقريباً).</p>
+</div>
+</section>
+
+</main>
+<script>
+var MATS=[["Baustahl (S235)",200,30],["Vergütungsstahl (C45)",180,25],["Edelstahl (V2A)",120,15],["Aluminium",400,150],["Messing",250,100],["Gusseisen",150,20],["Titan",50,0]];
+var TERMS=[
+["Drehmaschine","مخرطة"],["Fräsmaschine","فريزة"],["Drehmeißel","أداة القطع للمخرطة"],["Bohrer","مثقاب"],
+["Futter","ظرف التثبيت"],["Spindel","عمود الدوران"],["Reitstock","الذنب المتحرك"],["Werkstück","قطعة الشغل"],
+["Drehzahl","عدد الدورات"],["Vorschub","التغذية"],["Schnittgeschwindigkeit","سرعة القطع"],["Span","الرايش (برادة المعدن)"],
+["Schruppen","التخشين"],["Schlichten","التشطيب"],["Einstechen","الحز (التقطيع)"],["Planen","التسوية الجبهية"],
+["Gewinde","اللولب (الأسنان)"],["Fase","الشطف"],["Toleranz","التفاوت المسموح"],["Passung","التوافق (الخلوص)"],
+["Messschieber","القدمة (الكالبر)"],["Mikrometer","الميكرومتر"],["Kühlschmierstoff","سائل التبريد والتزييت"],["Rauheit","خشونة السطح"],
+["Spannen","التثبيت"],["Nullpunkt","نقطة الصفر"],["Zeichnung","الرسم الفني"],["Werkzeugwechsel","تغيير الأداة"],
+["Wendeplatte","الشفرة القابلة للقلب"],["Not-Aus","زر الإيقاف الطارئ"],["Schutzbrille","نظارة الحماية"],["Gehörschutz","واقي السمع"]];
+var THR=[["M3",0.5],["M4",0.7],["M5",0.8],["M6",1],["M8",1.25],["M10",1.5],["M12",1.75],["M14",2],["M16",2],["M20",2.5],["M24",3],["M30",3.5]];
+function $(i){return document.getElementById(i)}
+function fmt(n,u){return Math.round(n*10)/10+" "+u}
+var mat=$("mat");
+MATS.forEach(function(m,i){var o=document.createElement("option");o.value=i;o.textContent=m[0];mat.appendChild(o)});
+function calc(){
+var m=MATS[mat.value],hss=$("tool").value==="hss",vc=hss?m[2]:m[1];
+var d=parseFloat($("dia").value),f=parseFloat($("fn").value);
+if(!vc){$("vc").textContent="غير مناسب";$("rpm").textContent="—";$("vf").textContent="—";return}
+if(!(d>0)||!(f>0)){$("vc").textContent=fmt(vc,"م/د");$("rpm").textContent="—";$("vf").textContent="—";return}
+var n=vc*1000/(Math.PI*d);
+$("vc").textContent=fmt(vc,"m/min");$("rpm").textContent=Math.round(n)+" U/min";$("vf").textContent=fmt(n*f,"mm/min");
+}
+["mat","tool","dia","fn"].forEach(function(i){$(i).addEventListener("input",calc)});
+calc();
+function terms(){
+var q=$("q").value.trim().toLowerCase(),h="";
+TERMS.forEach(function(t){
+if(!q||t[0].toLowerCase().indexOf(q)>-1||t[1].indexOf(q)>-1)h+='<div class="term"><span>'+t[1]+'</span><span class="de">'+t[0]+'</span></div>';
+});
+$("terms").innerHTML=h||'<p class="note">لا توجد نتيجة. جرّب كلمة أخرى.</p>';
+}
+$("q").addEventListener("input",terms);terms();
+var tb="";THR.forEach(function(t){tb+='<tr><td class="l">'+t[0]+'</td><td>'+t[1]+'</td><td>'+(Math.round((parseInt(t[0].slice(1))-t[1])*10)/10)+'</td></tr>'});
+$("tt").innerHTML=tb;
+document.querySelectorAll("nav button").forEach(function(b){b.addEventListener("click",function(){
+document.querySelectorAll("nav button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===b.dataset.t)});
+})});
+</script>
+</body>
+</html>
